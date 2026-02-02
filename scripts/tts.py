@@ -28,9 +28,8 @@ class BaiduTTS:
         :param filename: 保存文件名
         :return: bool 成功/失败
         """
-        # 2次 URL Encode (关键！)
+        # URL Encode
         tex = quote(text)
-        tex = quote(tex)  # 2次encode: %E4%B8%AD -> %25E4%25B8%25AD
         
         payload = {
             "tex": tex,
@@ -71,7 +70,7 @@ class BaiduTTS:
         :param aue: 音频格式
         :return: 音频字节数据或None
         """
-        tex = quote(quote(text))
+        tex = quote(text)
         payload = {
             "tex": tex, "tok": self.token, "cuid": self.cuid,
             "ctp": 1, "lan": "zh", "spd": self.spd, "pit": self.pit,
