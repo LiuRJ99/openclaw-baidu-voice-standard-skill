@@ -54,6 +54,13 @@ def handle(action, params, config):
         # 语音合成
         text = params.get("text")
         save_path = params.get("save_path", "output.mp3")
+        # 如果save_path不是绝对路径，则保存到alist-mount/voice目录
+        if not save_path.startswith('/'):
+            save_path = f"/home/pihome/alist-mount/voice/{os.path.basename(save_path)}"
+        else:
+            # 确保目录存在
+            os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        
         aue = params.get("format", 3)  # 3=mp3
         per = params.get("per", config.get("per", 0))
         
