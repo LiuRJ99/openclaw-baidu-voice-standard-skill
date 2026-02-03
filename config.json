@@ -1,0 +1,8 @@
+{
+  "cuid": "openclaw_raspberry_pi",
+  "dev_pid": 1537,
+  "per": 0,
+  "default_speed": 5,
+  "default_pitch": 5,
+  "default_volume": 5
+}

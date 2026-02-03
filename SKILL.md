@@ -13,7 +13,7 @@ This skill provides integration with Baidu's cloud speech services for both spee
 
 ### 1. Speech Recognition (ASR)
 - Convert audio files to text using Baidu's ASR API
-- Support for PCM, WAV, AMR, M4A formats
+- Automatic format conversion: Supports any common audio format (MP3, WAV, AMR, M4A, etc.), automatically converts to required format
 - Up to 60-second audio files
 - Multiple Chinese dialects: Mandarin (1537), English (1737), Cantonese (1637), Sichuan dialect (1837)
 
@@ -65,9 +65,10 @@ result = handle("tts", {
 ## Audio Format Requirements
 
 ### For ASR (Speech Recognition)
-- Format: PCM (recommended), WAV, AMR, M4A
-- Sample rate: 16000Hz (recommended) or 8000Hz (Mandarin only)
-- Channels: 1 (mono)
+- Original Format: Any common audio format (MP3, WAV, AMR, M4A, etc.)
+- Converted Format: PCM (automatically converted), WAV, AMR, M4A
+- Sample rate: 16000Hz (automatically converted), or 8000Hz (Mandarin only)
+- Channels: 1 (mono, automatically converted from stereo)
 - Duration: ≤60 seconds
 
 ### For TTS (Text Synthesis)

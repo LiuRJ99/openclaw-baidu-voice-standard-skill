@@ -1,6 +1,7 @@
 from scripts.asr import BaiduASR
 from scripts.tts import BaiduTTS
 from scripts.utils import get_access_token
+from scripts.audio_utils import prepare_audio_for_asr
 import os
 import tempfile
 import time
@@ -19,7 +20,14 @@ def _get_token(config):
     if _token_cache["access_token"] and now < _token_cache["expires_at"]:
         return _token_cache["access_token"]
     
-    token, expires_in = get_access_token(config["api_key"], config["secret_key"])
+    # 从环境变量获取密钥
+    api_key = os.getenv("BAIDU_API_KEY")
+    secret_key = os.getenv("BAIDU_SECRET_KEY")
+    
+    if not api_key or not secret_key:
+        raise ValueError("Missing BAIDU_API_KEY or BAIDU_SECRET_KEY environment variable")
+    
+    token, expires_in = get_access_token(api_key, secret_key)
     _token_cache["access_token"] = token
     _token_cache["expires_at"] = now + expires_in - 3600  # 提前1小时过期
     return token
@@ -41,12 +49,29 @@ def handle(action, params, config):
         rate = params.get("rate", 16000)
         dev_pid = params.get("dev_pid", config.get("dev_pid", 1537))
         
-        asr = BaiduASR(token, cuid, dev_pid)
-        
         if audio_data:
+            # Raw audio data processing (already in correct format)
+            asr = BaiduASR(token, cuid, dev_pid)
             result = asr.recognize_raw(audio_data, format, rate)
+        elif audio_path:
+            # File-based processing with automatic format conversion
+            # First prepare the audio file for ASR
+            prepared_audio_path = prepare_audio_for_asr(audio_path)
+            if not prepared_audio_path:
+                return {"success": False, "error": "Failed to prepare audio file for ASR. Unsupported format or invalid file."}
+            
+            # Use the prepared audio file for recognition
+            asr = BaiduASR(token, cuid, dev_pid)
+            result = asr.recognize(prepared_audio_path, "pcm", 16000)  # Always use PCM at 16kHz after conversion
+            
+            # Clean up temporary converted file if it was created in temp directory
+            if prepared_audio_path != audio_path:
+                try:
+                    os.remove(prepared_audio_path)
+                except:
+                    pass  # Ignore cleanup errors
         else:
-            result = asr.recognize(audio_path, format, rate)
+            return {"success": False, "error": "Either audio_path or audio_data must be provided"}
         
         return {"success": result is not None, "text": result}
     

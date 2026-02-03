@@ -1,0 +1,53 @@
+{
+  "name": "baidu-voice",
+  "version": "1.0.0",
+  "description": "Baidu Speech Recognition (ASR) and Text-to-Speech (TTS) services for OpenClaw. Provides 60s limit audio recognition and synthesis support for pcm/wav/amr formats.",
+  "main": "main.py",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "baidu",
+    "speech",
+    "recognition",
+    "tts",
+    "asr",
+    "voice",
+    "audio"
+  ],
+  "author": "OpenClaw",
+  "license": "MIT",
+  "dependencies": {
+    "requests": ">=2.25.1"
+  },
+  "openclaw": {
+    "skill": {
+      "name": "baidu-voice",
+      "description": "Baidu Speech Recognition (ASR) and Text-to-Speech (TTS) services for OpenClaw. Provides 60s limit audio recognition and synthesis support for pcm/wav/amr formats. Use when Codex needs to work with voice services for: (1) Converting speech to text (ASR), (2) Converting text to speech (TTS), (3) Processing audio files with Baidu's speech APIs, or (4) Integrating voice capabilities into applications.",
+      "type": "external",
+      "entry": "main.py",
+      "interface": {
+        "methods": [
+          {
+            "name": "handle",
+            "params": [
+              {
+                "name": "action",
+                "type": "string",
+                "enum": ["asr", "tts"]
+              },
+              {
+                "name": "params",
+                "type": "object"
+              },
+              {
+                "name": "config",
+                "type": "object"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
